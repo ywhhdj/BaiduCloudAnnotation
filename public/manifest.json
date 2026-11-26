@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "点云贴边助手 · Galgame",
+  "short_name": "点云贴边",
+  "version": "1.1.0",
+  "description": "百度众测 3D 点云辅助：打开即自动框选并贴合大部分目标（含多帧），人工审批优化；人工修改框守护。Vue 多入口 / 性能优先。",
+  "minimum_chrome_version": "111",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://test.baidu.com/*",
+    "http://test.baidu.com/*",
+    "https://*.bcebos.com/*",
+    "http://*.bcebos.com/*"
+  ],
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "点云贴边助手",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://test.baidu.com/mark/*",
+        "http://test.baidu.com/mark/*"
+      ],
+      "js": ["js/content.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "js/inject.js",
+        "js/fit.worker.js",
+        "js/detect.worker.js"
+      ],
+      "matches": [
+        "https://test.baidu.com/*",
+        "http://test.baidu.com/*"
+      ]
+    }
+  ]
+}
