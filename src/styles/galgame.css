@@ -295,3 +295,46 @@
 @media (prefers-reduced-motion: reduce) {
   .pc-root *, .pc-root *::before, .pc-root *::after { animation: none !important; transition: none !important; }
 }
+
+/* ===== 组件补充：数字输入 / 滑块 / 多行文本 ===== */
+.pc-root .pc-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.pc-root .pc-num > span { 
+  color: var(--pc-dim); 
+  font-size: 11px; 
+}
+
+.pc-root .pc-range { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.pc-root .pc-range > b {
+  min-width: 36px;
+  text-align: right;
+  color: var(--pc-accent-2);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.pc-root .pc-textarea {
+  width: 100%;
+  background: #1b1f30;
+  color: var(--pc-text);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.pc-root .pc-textarea:focus {
+  outline: none;
+  border-color: var(--pc-accent);
+  box-shadow: 0 0 0 2px rgba(255, 158, 205, 0.18);
+}

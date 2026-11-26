@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "点云贴边助手 · Galgame",
+  "name": "点云贴边助手 · 自动拉框",
   "short_name": "点云贴边",
-  "version": "1.1.0",
-  "description": "百度众测 3D 点云辅助：打开即自动框选并贴合大部分目标（含多帧），人工审批优化；人工修改框守护。Vue 多入口 / 性能优先。",
+  "version": "2.0.0",
+  "description": "百度众测 3D 点云辅助：所有 /mark/practice/show/id/*/page_id/* 链接自动生效；点云初始化完毕后按长宽高估算自动绘制大型车/轿车等候选框，自动旋转贴边；帧数动态获取；类别、阈值、URL、平台参数全部可配置；人工审批与守护，原数据只改几何。",
   "minimum_chrome_version": "111",
   "permissions": [
     "storage",
@@ -15,7 +15,8 @@
     "https://test.baidu.com/*",
     "http://test.baidu.com/*",
     "https://*.bcebos.com/*",
-    "http://*.bcebos.com/*"
+    "http://*.bcebos.com/*",
+    "http://60.204.142.193:8080/*"
   ],
   "background": {
     "service_worker": "js/background.js",
@@ -29,10 +30,20 @@
   "content_scripts": [
     {
       "matches": [
+        "https://test.baidu.com/mark/practice/show/id/*/page_id/*",
+        "http://test.baidu.com/mark/practice/show/id/*/page_id/*",
+        "https://test.baidu.com/mark/practice/view/id/*/page_id/*",
+        "https://test.baidu.com/mark/test/show/id/*/page_id/*",
+        "https://test.baidu.com/mark/task/enterDo/id/*",
+        "https://test.baidu.com/mark/task/view/id/*",
+        "https://test.baidu.com/mark/*/show/id/*/page_id/*",
         "https://test.baidu.com/mark/*",
         "http://test.baidu.com/mark/*"
       ],
-      "js": ["js/content.js"],
+      "js": [
+        "js/content.js"
+      ],
+      "type": "module",
       "run_at": "document_start",
       "all_frames": false
     }

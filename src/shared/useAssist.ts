@@ -2,24 +2,42 @@ import { onMounted, onUnmounted, ref, watch, type Ref } from 'vue';
 import { DEFAULT_CONFIG, EMPTY_STATUS, MSG, STORAGE_KEYS, UI_ACTION } from './constants';
 import { send } from './messages';
 import { getConfig, getStatus, setConfig } from './storage';
-import type { AssistConfig, RuntimeStatus } from './types';
+import type { AssistConfig, ClassProfile, RuntimeStatus } from './types';
 
 export function useAssist() {
-  const status = ref<RuntimeStatus>({ ...EMPTY_STATUS });
-  const config = ref<AssistConfig>({ ...DEFAULT_CONFIG });
+  const status = ref<RuntimeStatus>({
+    ...EMPTY_STATUS
+  });
+  const config = ref<AssistConfig>({
+    ...DEFAULT_CONFIG
+  });
   const ready = ref(false);
 
   const refresh = async () => {
-    const [s, c] = await Promise.all([getStatus(), getConfig()]);
-    status.value = { ...EMPTY_STATUS, ...s };
-    config.value = { ...DEFAULT_CONFIG, ...c };
+    const [s, c] = await Promise.all([
+      getStatus(),
+      getConfig()
+    ]);
+    status.value = {
+      ...EMPTY_STATUS,
+      ...s
+    };
+    config.value = c;
     ready.value = true;
   };
 
   const listener = (changes: any, area: string) => {
     if (area !== 'local') return;
-    if (changes[STORAGE_KEYS.status]?.newValue) status.value = { ...EMPTY_STATUS, ...changes[STORAGE_KEYS.status].newValue };
-    if (changes[STORAGE_KEYS.config]?.newValue) config.value = { ...DEFAULT_CONFIG, ...changes[STORAGE_KEYS.config].newValue };
+    if (changes[STORAGE_KEYS.status]?.newValue)
+      status.value = {
+        ...EMPTY_STATUS,
+        ...changes[STORAGE_KEYS.status].newValue
+      };
+    if (changes[STORAGE_KEYS.config]?.newValue)
+      config.value = {
+        ...DEFAULT_CONFIG,
+        ...changes[STORAGE_KEYS.config].newValue
+      };
   };
 
   onMounted(() => {
@@ -31,15 +49,42 @@ export function useAssist() {
   /** 写配置 + 通知后台广播到当前标注页 */
   const patchConfig = async (patch: Partial<AssistConfig>) => {
     config.value = await setConfig(patch);
-    await send({ type: MSG.CONFIG_SET, payload: patch });
+    await send({
+      type: MSG.CONFIG_SET,
+      payload: patch
+    });
+  };
+
+  /** 新增/编辑/删除一类物体：只改这一张表，算法与 Worker 不用动 */
+  const patchProfiles = async (profiles: ClassProfile[]) => {
+    await patchConfig({ classProfiles: profiles });
+    await send({
+      type: MSG.TOAST,
+      payload: {
+        text: '类别尺寸表已更新，下一轮自动框选立即生效（人工框不受影响）'
+      }
+    });
   };
 
   const action = (act: string, value?: unknown) =>
-    send({ type: MSG.UI_ACTION, payload: { action: act, value } });
+    send({
+      type: MSG.UI_ACTION,
+      payload: { action: act, value }
+    });
 
   const openOptions = () => chrome.runtime.openOptionsPage?.();
 
-  return { status, config, ready, refresh, patchConfig, action, openOptions, UI_ACTION };
+  return {
+    status,
+    config,
+    ready,
+    refresh,
+    patchConfig,
+    patchProfiles,
+    action,
+    openOptions,
+    UI_ACTION
+  };
 }
 
 /** 打字机：仅在文本变化时运行，隐藏/卸载即停止，不产生常驻 rAF */
@@ -66,6 +111,9 @@ export function useTypewriter(text: Ref<string>, speed: Ref<number>) {
   };
 
   watch([text, speed], run, { immediate: true });
-  onUnmounted(() => { token += 1; if (timer) clearTimeout(timer); });
+  onUnmounted(() => {
+    token += 1;
+    if (timer) clearTimeout(timer);
+  });
   return shown;
 }

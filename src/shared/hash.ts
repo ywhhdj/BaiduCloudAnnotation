@@ -15,7 +15,15 @@ const q = (v: number) => Math.round(v * 1000) / 1000;
 export function boxSignature(box: Pick<Box3D, 'center' | 'size' | 'yaw'>): string {
   const c: Vec3 = box.center;
   const s: Vec3 = box.size;
-  return [q(c[0]), q(c[1]), q(c[2]), q(s[0]), q(s[1]), q(s[2]), q(box.yaw)].join(',');
+  return [
+    q(c[0]), 
+    q(c[1]),
+    q(c[2]),
+    q(s[0]),
+    q(s[1]),
+    q(s[2]),
+    q(box.yaw)
+  ].join(',');
 }
 
 export function boxKey(box: Pick<Box3D, 'id' | 'frameId' | 'trackId'>): string {

@@ -19,7 +19,7 @@ const entries = {
 const getEntryConfig = (entryName: string = 'popup') => {
   return entries[entryName as keyof typeof entries] || entries.popup
 }
-const entryConfig = getEntryConfig('popup')
+const entryConfig = getEntryConfig('options')
 
 const pathSrc = path.resolve(__dirname, 'src');
 // https://vite.dev/config/
@@ -36,13 +36,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        // overlay: 'src/overlay/main.ts',
         options: 'options.html',
         popup: 'popup.html',
-        background: 'src/background/index.ts',
-        inject: 'src/page/inject.ts',
-        "detect.worker": 'src/workers/detect.worker.ts',
-        "fit.worker": 'src/workers/fit.worker.ts',
+        background: 'src/core/background/index.ts',
+        inject: 'src/core/page/inject.ts',
+        "detect.worker": 'src/core/workers/detect.worker.ts',
+        "fit.worker": 'src/core/workers/fit.worker.ts',
       },
       output: {
         entryFileNames: (chunkInfo) => {

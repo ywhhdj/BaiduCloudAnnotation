@@ -1,6 +1,6 @@
 {
-  "name": "zhihui",
-  "version": "0.0.0",
+  "name": "baidu-point-cloud-plugin",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
